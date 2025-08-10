@@ -1,5 +1,5 @@
 name = "shortlink-cloudflare"
-main = "src/index.js"
+main = "src/worker.js"
 compatibility_date = "2023-10-01"
 
 [vars]

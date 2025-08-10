@@ -21,8 +21,9 @@ function isValidUrl(string) {
   }
 }
 
-// HTML 页面内容
-const HTML_CONTENT = `<!DOCTYPE html>
+// 获取HTML页面
+function getHTMLPage() {
+  return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -175,7 +176,14 @@ const HTML_CONTENT = `<!DOCTYPE html>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script src="/static/app.js"></script>
+</body>
+</html>`;
+}
+
+// 获取JavaScript代码
+function getJavaScriptCode() {
+  return `
         // DOM Elements
         const urlForm = document.getElementById('urlForm');
         const originalUrlInput = document.getElementById('originalUrl');
@@ -382,7 +390,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
             }
 
             try {
-                const response = await fetch(\`/api/delete/\${code}\`, {
+                const response = await fetch('/api/delete/' + code, {
                     method: 'DELETE'
                 });
 
@@ -405,12 +413,11 @@ const HTML_CONTENT = `<!DOCTYPE html>
             existingAlerts.forEach(alert => alert.remove());
 
             const alertDiv = document.createElement('div');
-            alertDiv.className = \`alert alert-\${type} alert-dismissible fade show position-fixed\`;
+            alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show position-fixed';
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 350px;';
-            alertDiv.innerHTML = \`
-                \${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            \`;
+            alertDiv.innerHTML = 
+                message + 
+                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
 
             document.body.appendChild(alertDiv);
 
@@ -424,9 +431,8 @@ const HTML_CONTENT = `<!DOCTYPE html>
 
         // Load URLs on page load
         document.addEventListener('DOMContentLoaded', loadUrls);
-    </script>
-</body>
-</html>`;
+  `;
+}
 
 // 主要的请求处理函数
 export default {
@@ -449,9 +455,19 @@ export default {
     try {
       // 主页
       if (path === '/') {
-        return new Response(HTML_CONTENT, {
+        return new Response(getHTMLPage(), {
           headers: { 
             'Content-Type': 'text/html; charset=utf-8',
+            ...corsHeaders 
+          }
+        });
+      }
+
+      // 静态JavaScript文件
+      if (path === '/static/app.js') {
+        return new Response(getJavaScriptCode(), {
+          headers: { 
+            'Content-Type': 'application/javascript; charset=utf-8',
             ...corsHeaders 
           }
         });
