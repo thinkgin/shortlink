@@ -477,11 +477,11 @@ export default {
         if (!env.URL_STORAGE) {
           return new Response(
             JSON.stringify({ error: 'KV存储未配置，请联系管理员配置URL_STORAGE命名空间' }),
-            { 
-              status: 500, 
-              headers: { 
+            {
+              status: 500,
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
@@ -492,11 +492,11 @@ export default {
         if (!originalUrl || !isValidUrl(originalUrl)) {
           return new Response(
             JSON.stringify({ error: '请提供有效的URL' }),
-            { 
-              status: 400, 
-              headers: { 
+            {
+              status: 400,
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
@@ -516,10 +516,10 @@ export default {
                 clicks: data.clicks || 0,
                 createdAt: data.createdAt
               }),
-              { 
-                headers: { 
+              {
+                headers: {
                   'Content-Type': 'application/json',
-                  ...corsHeaders 
+                  ...corsHeaders
                 }
               }
             );
@@ -535,11 +535,11 @@ export default {
           if (attempts > 10) {
             return new Response(
               JSON.stringify({ error: '生成短代码失败，请重试' }),
-              { 
-                status: 500, 
-                headers: { 
+              {
+                status: 500,
+                headers: {
                   'Content-Type': 'application/json',
-                  ...corsHeaders 
+                  ...corsHeaders
                 }
               }
             );
@@ -562,12 +562,12 @@ export default {
         const urlList = await env.URL_STORAGE.get('url_list');
         const urls = urlList ? JSON.parse(urlList) : [];
         urls.unshift(code); // 添加到开头
-        
+
         // 只保留最新的50个
         if (urls.length > 50) {
           urls.splice(50);
         }
-        
+
         await env.URL_STORAGE.put('url_list', JSON.stringify(urls));
 
         return new Response(
@@ -578,10 +578,10 @@ export default {
             clicks: 0,
             createdAt: urlData.createdAt
           }),
-          { 
-            headers: { 
+          {
+            headers: {
               'Content-Type': 'application/json',
-              ...corsHeaders 
+              ...corsHeaders
             }
           }
         );
@@ -593,10 +593,10 @@ export default {
         if (!env.URL_STORAGE) {
           return new Response(
             JSON.stringify({ urls: [] }),
-            { 
-              headers: { 
+            {
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
@@ -604,7 +604,7 @@ export default {
 
         const urlList = await env.URL_STORAGE.get('url_list');
         const codes = urlList ? JSON.parse(urlList) : [];
-        
+
         const urls = [];
         for (const code of codes.slice(0, 20)) { // 只返回前20个
           const data = await env.URL_STORAGE.get(`code:${code}`);
@@ -619,10 +619,10 @@ export default {
 
         return new Response(
           JSON.stringify({ urls }),
-          { 
-            headers: { 
+          {
+            headers: {
               'Content-Type': 'application/json',
-              ...corsHeaders 
+              ...corsHeaders
             }
           }
         );
@@ -634,34 +634,34 @@ export default {
         if (!env.URL_STORAGE) {
           return new Response(
             JSON.stringify({ error: 'KV存储未配置' }),
-            { 
-              status: 500, 
-              headers: { 
+            {
+              status: 500,
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
         }
 
         const code = path.split('/').pop();
-        
+
         const data = await env.URL_STORAGE.get(`code:${code}`);
         if (!data) {
           return new Response(
             JSON.stringify({ error: '短链接不存在' }),
-            { 
-              status: 404, 
-              headers: { 
+            {
+              status: 404,
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
         }
 
         const urlData = JSON.parse(data);
-        
+
         // 删除映射关系
         await env.URL_STORAGE.delete(`code:${code}`);
         await env.URL_STORAGE.delete(`url:${urlData.originalUrl}`);
@@ -679,10 +679,10 @@ export default {
 
         return new Response(
           JSON.stringify({ message: '删除成功' }),
-          { 
-            headers: { 
+          {
+            headers: {
               'Content-Type': 'application/json',
-              ...corsHeaders 
+              ...corsHeaders
             }
           }
         );
@@ -691,24 +691,24 @@ export default {
             // 短链接重定向
       if (path.length > 1) {
         const code = path.substring(1); // 去掉开头的 '/'
-        
+
         // 检查KV存储是否可用
         if (!env.URL_STORAGE) {
-          return new Response('KV存储未配置，无法进行重定向', { 
+          return new Response('KV存储未配置，无法进行重定向', {
             status: 500,
-            headers: corsHeaders 
+            headers: corsHeaders
           });
         }
-        
+
         const data = await env.URL_STORAGE.get(`code:${code}`);
-        
+
         if (data) {
           const urlData = JSON.parse(data);
-          
+
           // 更新点击次数和最后访问时间
           urlData.clicks = (urlData.clicks || 0) + 1;
           urlData.lastAccessed = new Date().toISOString();
-          
+
           await env.URL_STORAGE.put(`code:${code}`, JSON.stringify(urlData));
 
           return Response.redirect(urlData.originalUrl, 302);
