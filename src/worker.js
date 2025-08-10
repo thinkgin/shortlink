@@ -266,7 +266,7 @@ function getJavaScriptCode() {
                 if (response.ok) {
                     displayUrls(data.urls || []);
                 } else {
-                    urlListDiv.innerHTML = 
+                    urlListDiv.innerHTML =
                         '<div class="text-center py-5">' +
                             '<i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>' +
                             '<p class="text-muted">加载失败，请重试</p>' +
@@ -274,7 +274,7 @@ function getJavaScriptCode() {
                 }
             } catch (error) {
                 console.error('Error loading URLs:', error);
-                urlListDiv.innerHTML = 
+                urlListDiv.innerHTML =
                     '<div class="text-center py-5">' +
                         '<i class="fas fa-wifi fa-2x text-danger mb-3"></i>' +
                         '<p class="text-muted">网络连接错误</p>' +
@@ -285,7 +285,7 @@ function getJavaScriptCode() {
         // Display URLs
         function displayUrls(urls) {
             if (urls.length === 0) {
-                urlListDiv.innerHTML = 
+                urlListDiv.innerHTML =
                     '<div class="text-center py-5">' +
                         '<i class="fas fa-inbox fa-2x text-muted mb-3"></i>' +
                         '<p class="text-muted">暂无短链接记录</p>' +
@@ -298,11 +298,11 @@ function getJavaScriptCode() {
                 const createdDate = new Date(url.createdAt).toLocaleString('zh-CN');
                 const lastAccessed = url.lastAccessed ?
                     new Date(url.lastAccessed).toLocaleString('zh-CN') : '从未访问';
-                
-                const displayUrl = url.originalUrl.length > 50 ? 
+
+                const displayUrl = url.originalUrl.length > 50 ?
                     url.originalUrl.substring(0, 50) + '...' : url.originalUrl;
 
-                urlsHtml += 
+                urlsHtml +=
                     '<div class="url-item p-3 mb-3 rounded">' +
                         '<div class="row align-items-center">' +
                             '<div class="col-md-4">' +

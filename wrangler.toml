@@ -1,9 +1,9 @@
-name = "shortlink-cloudflare"
+name = "shortlink"
 main = "src/worker.js"
 compatibility_date = "2023-10-01"
 
 [vars]
-BASE_URL = "https://your-worker.your-subdomain.workers.dev"
+BASE_URL = "https://shortlink.cwwx1818.workers.dev"
 
 # KV namespace for storing URL mappings
 [[kv_namespaces]]
