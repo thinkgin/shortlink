@@ -6,10 +6,11 @@ compatibility_date = "2023-10-01"
 BASE_URL = "https://shortlink.cwwx1818.workers.dev"
 
 # KV namespace for storing URL mappings
-[[kv_namespaces]]
-binding = "URL_STORAGE"
-id = "94f74c3d355a4dc6a61e57878ccc989c"
-preview_id = "94f74c3d355a4dc6a61e57878ccc989c"
+# 暂时注释掉，先部署看界面效果，然后再创建正确的KV命名空间
+# [[kv_namespaces]]
+# binding = "URL_STORAGE"
+# id = "your-kv-namespace-id"
+# preview_id = "your-preview-kv-namespace-id"
 
 # Optional: Custom domain
 # [env.production]
