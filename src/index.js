@@ -104,7 +104,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
                                             <span class="input-group-text bg-light border-0">
                                                 <i class="fas fa-globe text-primary"></i>
                                             </span>
-                                            <input type="url" class="form-control border-0" id="originalUrl" 
+                                            <input type="url" class="form-control border-0" id="originalUrl"
                                                    placeholder="请输入要缩短的网址..." required>
                                         </div>
                                     </div>
@@ -190,9 +190,9 @@ const HTML_CONTENT = `<!DOCTYPE html>
         // Handle form submission
         async function handleSubmit(e) {
             e.preventDefault();
-            
+
             const originalUrl = originalUrlInput.value.trim();
-            
+
             if (!originalUrl) {
                 showAlert('请输入有效的网址', 'danger');
                 return;
@@ -219,16 +219,16 @@ const HTML_CONTENT = `<!DOCTYPE html>
                     originalUrlResult.value = data.originalUrl;
                     shortUrlResult.value = data.shortUrl;
                     resultDiv.style.display = 'block';
-                    
+
                     // Scroll to result
                     resultDiv.scrollIntoView({ behavior: 'smooth' });
-                    
+
                     // Clear form
                     originalUrlInput.value = '';
-                    
+
                     // Reload URL list
                     loadUrls();
-                    
+
                     showAlert('短链接生成成功！', 'success');
                 } else {
                     showAlert(data.error || '生成失败，请重试', 'danger');
@@ -241,7 +241,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
             } catch (error) {
                 console.error('Error:', error);
                 showAlert('网络错误，请检查连接', 'danger');
-                
+
                 // Reset button
                 const button = urlForm.querySelector('button');
                 button.innerHTML = '<i class="fas fa-magic me-2"></i>生成短链接';
@@ -290,7 +290,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
 
             const urlsHtml = urls.map(url => {
                 const createdDate = new Date(url.createdAt).toLocaleString('zh-CN');
-                const lastAccessed = url.lastAccessed ? 
+                const lastAccessed = url.lastAccessed ?
                     new Date(url.lastAccessed).toLocaleString('zh-CN') : '从未访问';
 
                 return \`
@@ -304,7 +304,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
                                         <a href="\${url.shortUrl}" target="_blank" class="text-decoration-none fw-bold">
                                             \${url.shortUrl}
                                         </a>
-                                        <button class="btn btn-sm btn-outline-primary ms-2 copy-btn" 
+                                        <button class="btn btn-sm btn-outline-primary ms-2 copy-btn"
                                                 onclick="copyToClipboard('\${url.shortUrl}', this)">
                                             <i class="fas fa-copy"></i>
                                         </button>
@@ -313,10 +313,10 @@ const HTML_CONTENT = `<!DOCTYPE html>
                             </div>
                             <div class="col-md-4">
                                 <small class="text-muted d-block">原始网址</small>
-                                <a href="\${url.originalUrl}" target="_blank" class="text-decoration-none" 
+                                <a href="\${url.originalUrl}" target="_blank" class="text-decoration-none"
                                    title="\${url.originalUrl}">
-                                    \${url.originalUrl.length > 50 ? 
-                                      url.originalUrl.substring(0, 50) + '...' : 
+                                    \${url.originalUrl.length > 50 ?
+                                      url.originalUrl.substring(0, 50) + '...' :
                                       url.originalUrl}
                                 </a>
                             </div>
@@ -335,7 +335,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
                                     <br>
                                     <small class="text-muted">最后访问: \${lastAccessed}</small>
                                     <br>
-                                    <button class="btn btn-sm btn-outline-danger mt-1" 
+                                    <button class="btn btn-sm btn-outline-danger mt-1"
                                             onclick="deleteUrl('\${url.code}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -358,7 +358,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
                 }
 
                 await navigator.clipboard.writeText(text);
-                
+
                 // Visual feedback
                 if (button) {
                     const originalHTML = button.innerHTML;
@@ -367,7 +367,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
                         button.innerHTML = originalHTML;
                     }, 2000);
                 }
-                
+
                 showAlert('链接已复制到剪贴板', 'success');
             } catch (err) {
                 console.error('Failed to copy: ', err);
@@ -450,9 +450,9 @@ export default {
       // 主页
       if (path === '/') {
         return new Response(HTML_CONTENT, {
-          headers: { 
+          headers: {
             'Content-Type': 'text/html; charset=utf-8',
-            ...corsHeaders 
+            ...corsHeaders
           }
         });
       }
@@ -464,11 +464,11 @@ export default {
         if (!originalUrl || !isValidUrl(originalUrl)) {
           return new Response(
             JSON.stringify({ error: '请提供有效的URL' }),
-            { 
-              status: 400, 
-              headers: { 
+            {
+              status: 400,
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
@@ -488,10 +488,10 @@ export default {
                 clicks: data.clicks || 0,
                 createdAt: data.createdAt
               }),
-              { 
-                headers: { 
+              {
+                headers: {
                   'Content-Type': 'application/json',
-                  ...corsHeaders 
+                  ...corsHeaders
                 }
               }
             );
@@ -507,11 +507,11 @@ export default {
           if (attempts > 10) {
             return new Response(
               JSON.stringify({ error: '生成短代码失败，请重试' }),
-              { 
-                status: 500, 
-                headers: { 
+              {
+                status: 500,
+                headers: {
                   'Content-Type': 'application/json',
-                  ...corsHeaders 
+                  ...corsHeaders
                 }
               }
             );
@@ -534,12 +534,12 @@ export default {
         const urlList = await env.URL_STORAGE.get('url_list');
         const urls = urlList ? JSON.parse(urlList) : [];
         urls.unshift(code); // 添加到开头
-        
+
         // 只保留最新的50个
         if (urls.length > 50) {
           urls.splice(50);
         }
-        
+
         await env.URL_STORAGE.put('url_list', JSON.stringify(urls));
 
         return new Response(
@@ -550,10 +550,10 @@ export default {
             clicks: 0,
             createdAt: urlData.createdAt
           }),
-          { 
-            headers: { 
+          {
+            headers: {
               'Content-Type': 'application/json',
-              ...corsHeaders 
+              ...corsHeaders
             }
           }
         );
@@ -563,7 +563,7 @@ export default {
       if (path === '/api/list' && method === 'GET') {
         const urlList = await env.URL_STORAGE.get('url_list');
         const codes = urlList ? JSON.parse(urlList) : [];
-        
+
         const urls = [];
         for (const code of codes.slice(0, 20)) { // 只返回前20个
           const data = await env.URL_STORAGE.get(`code:${code}`);
@@ -578,10 +578,10 @@ export default {
 
         return new Response(
           JSON.stringify({ urls }),
-          { 
-            headers: { 
+          {
+            headers: {
               'Content-Type': 'application/json',
-              ...corsHeaders 
+              ...corsHeaders
             }
           }
         );
@@ -590,23 +590,23 @@ export default {
       // API: 删除URL
       if (path.startsWith('/api/delete/') && method === 'DELETE') {
         const code = path.split('/').pop();
-        
+
         const data = await env.URL_STORAGE.get(`code:${code}`);
         if (!data) {
           return new Response(
             JSON.stringify({ error: '短链接不存在' }),
-            { 
-              status: 404, 
-              headers: { 
+            {
+              status: 404,
+              headers: {
                 'Content-Type': 'application/json',
-                ...corsHeaders 
+                ...corsHeaders
               }
             }
           );
         }
 
         const urlData = JSON.parse(data);
-        
+
         // 删除映射关系
         await env.URL_STORAGE.delete(`code:${code}`);
         await env.URL_STORAGE.delete(`url:${urlData.originalUrl}`);
@@ -624,10 +624,10 @@ export default {
 
         return new Response(
           JSON.stringify({ message: '删除成功' }),
-          { 
-            headers: { 
+          {
+            headers: {
               'Content-Type': 'application/json',
-              ...corsHeaders 
+              ...corsHeaders
             }
           }
         );
@@ -637,14 +637,14 @@ export default {
       if (path.length > 1) {
         const code = path.substring(1); // 去掉开头的 '/'
         const data = await env.URL_STORAGE.get(`code:${code}`);
-        
+
         if (data) {
           const urlData = JSON.parse(data);
-          
+
           // 更新点击次数和最后访问时间
           urlData.clicks = (urlData.clicks || 0) + 1;
           urlData.lastAccessed = new Date().toISOString();
-          
+
           await env.URL_STORAGE.put(`code:${code}`, JSON.stringify(urlData));
 
           return Response.redirect(urlData.originalUrl, 302);
@@ -652,20 +652,20 @@ export default {
       }
 
       // 404 页面
-      return new Response('页面不存在', { 
+      return new Response('页面不存在', {
         status: 404,
-        headers: corsHeaders 
+        headers: corsHeaders
       });
 
     } catch (error) {
       console.error('Error:', error);
       return new Response(
         JSON.stringify({ error: '服务器内部错误' }),
-        { 
-          status: 500, 
-          headers: { 
+        {
+          status: 500,
+          headers: {
             'Content-Type': 'application/json',
-            ...corsHeaders 
+            ...corsHeaders
           }
         }
       );
