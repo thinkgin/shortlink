@@ -14,5 +14,5 @@ preview_id = "94f74c3d355a4dc6a61e57878ccc989c"
 # Optional: Custom domain
 # [env.production]
 # routes = [
-#    { pattern = "short.example.com/*", zone_name = "example.com" }
+#   { pattern = "short.example.com/*", zone_name = "example.com" }
 # ]
