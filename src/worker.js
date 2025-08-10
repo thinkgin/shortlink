@@ -266,93 +266,91 @@ function getJavaScriptCode() {
                 if (response.ok) {
                     displayUrls(data.urls || []);
                 } else {
-                    urlListDiv.innerHTML = \`
-                        <div class="text-center py-5">
-                            <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                            <p class="text-muted">加载失败，请重试</p>
-                        </div>
-                    \`;
+                    urlListDiv.innerHTML = 
+                        '<div class="text-center py-5">' +
+                            '<i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>' +
+                            '<p class="text-muted">加载失败，请重试</p>' +
+                        '</div>';
                 }
             } catch (error) {
                 console.error('Error loading URLs:', error);
-                urlListDiv.innerHTML = \`
-                    <div class="text-center py-5">
-                        <i class="fas fa-wifi fa-2x text-danger mb-3"></i>
-                        <p class="text-muted">网络连接错误</p>
-                    </div>
-                \`;
+                urlListDiv.innerHTML = 
+                    '<div class="text-center py-5">' +
+                        '<i class="fas fa-wifi fa-2x text-danger mb-3"></i>' +
+                        '<p class="text-muted">网络连接错误</p>' +
+                    '</div>';
             }
         }
 
         // Display URLs
         function displayUrls(urls) {
             if (urls.length === 0) {
-                urlListDiv.innerHTML = \`
-                    <div class="text-center py-5">
-                        <i class="fas fa-inbox fa-2x text-muted mb-3"></i>
-                        <p class="text-muted">暂无短链接记录</p>
-                    </div>
-                \`;
+                urlListDiv.innerHTML = 
+                    '<div class="text-center py-5">' +
+                        '<i class="fas fa-inbox fa-2x text-muted mb-3"></i>' +
+                        '<p class="text-muted">暂无短链接记录</p>' +
+                    '</div>';
                 return;
             }
 
-            const urlsHtml = urls.map(url => {
+            let urlsHtml = '';
+            for (const url of urls) {
                 const createdDate = new Date(url.createdAt).toLocaleString('zh-CN');
                 const lastAccessed = url.lastAccessed ?
                     new Date(url.lastAccessed).toLocaleString('zh-CN') : '从未访问';
+                
+                const displayUrl = url.originalUrl.length > 50 ? 
+                    url.originalUrl.substring(0, 50) + '...' : url.originalUrl;
 
-                return \`
-                    <div class="url-item p-3 mb-3 rounded">
-                        <div class="row align-items-center">
-                            <div class="col-md-4">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-link text-primary me-2"></i>
-                                    <div>
-                                        <small class="text-muted d-block">短链接</small>
-                                        <a href="\${url.shortUrl}" target="_blank" class="text-decoration-none fw-bold">
-                                            \${url.shortUrl}
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-primary ms-2 copy-btn"
-                                                onclick="copyToClipboard('\${url.shortUrl}', this)">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <small class="text-muted d-block">原始网址</small>
-                                <a href="\${url.originalUrl}" target="_blank" class="text-decoration-none"
-                                   title="\${url.originalUrl}">
-                                    \${url.originalUrl.length > 50 ?
-                                      url.originalUrl.substring(0, 50) + '...' :
-                                      url.originalUrl}
-                                </a>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="text-center">
-                                    <div class="stats-card rounded p-2">
-                                        <div class="fw-bold">\${url.clicks || 0}</div>
-                                        <small>点击次数</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="text-end">
-                                    <small class="text-muted d-block">创建时间</small>
-                                    <small>\${createdDate}</small>
-                                    <br>
-                                    <small class="text-muted">最后访问: \${lastAccessed}</small>
-                                    <br>
-                                    <button class="btn btn-sm btn-outline-danger mt-1"
-                                            onclick="deleteUrl('\${url.code}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                \`;
-            }).join('');
+                urlsHtml += 
+                    '<div class="url-item p-3 mb-3 rounded">' +
+                        '<div class="row align-items-center">' +
+                            '<div class="col-md-4">' +
+                                '<div class="d-flex align-items-center">' +
+                                    '<i class="fas fa-link text-primary me-2"></i>' +
+                                    '<div>' +
+                                        '<small class="text-muted d-block">短链接</small>' +
+                                        '<a href="' + url.shortUrl + '" target="_blank" class="text-decoration-none fw-bold">' +
+                                            url.shortUrl +
+                                        '</a>' +
+                                        '<button class="btn btn-sm btn-outline-primary ms-2 copy-btn" ' +
+                                                'onclick="copyToClipboard(\'' + url.shortUrl + '\', this)">' +
+                                            '<i class="fas fa-copy"></i>' +
+                                        '</button>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="col-md-4">' +
+                                '<small class="text-muted d-block">原始网址</small>' +
+                                '<a href="' + url.originalUrl + '" target="_blank" class="text-decoration-none" ' +
+                                   'title="' + url.originalUrl + '">' +
+                                    displayUrl +
+                                '</a>' +
+                            '</div>' +
+                            '<div class="col-md-2">' +
+                                '<div class="text-center">' +
+                                    '<div class="stats-card rounded p-2">' +
+                                        '<div class="fw-bold">' + (url.clicks || 0) + '</div>' +
+                                        '<small>点击次数</small>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="col-md-2">' +
+                                '<div class="text-end">' +
+                                    '<small class="text-muted d-block">创建时间</small>' +
+                                    '<small>' + createdDate + '</small>' +
+                                    '<br>' +
+                                    '<small class="text-muted">最后访问: ' + lastAccessed + '</small>' +
+                                    '<br>' +
+                                    '<button class="btn btn-sm btn-outline-danger mt-1" ' +
+                                            'onclick="deleteUrl(\'' + url.code + '\')">' +
+                                        '<i class="fas fa-trash"></i>' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+            }
 
             urlListDiv.innerHTML = urlsHtml;
         }
