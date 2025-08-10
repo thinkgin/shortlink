@@ -1,0 +1,22 @@
+{
+    "name": "shortlink-cloudflare",
+    "version": "1.0.0",
+    "description": "A Cloudflare Workers based URL shortener service",
+    "main": "src/index.js",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy",
+        "tail": "wrangler tail",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "url-shortener",
+        "cloudflare-workers",
+        "edge-computing"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "devDependencies": {
+        "wrangler": "^3.0.0"
+    }
+}
