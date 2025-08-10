@@ -136,7 +136,7 @@ function getHTMLPage() {
                                     <label class="form-label text-muted">短链接：</label>
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" id="shortUrlResult" readonly>
-                                        <button class="btn btn-outline-primary copy-btn" type="button" onclick="copyToClipboard('shortUrlResult')">
+                                        <button class="btn btn-outline-primary copy-btn" type="button" data-target="shortUrlResult">
                                             <i class="fas fa-copy"></i>
                                         </button>
                                     </div>
@@ -194,6 +194,23 @@ function getJavaScriptCode() {
 
         // Event Listeners
         urlForm.addEventListener('submit', handleSubmit);
+        
+        // Event delegation for copy buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.copy-btn')) {
+                const button = e.target.closest('.copy-btn');
+                const url = button.getAttribute('data-url');
+                if (url) {
+                    copyToClipboard(url, button);
+                } else {
+                    // Fallback for buttons with onclick
+                    const input = document.getElementById(button.getAttribute('data-target') || 'shortUrlResult');
+                    if (input) {
+                        copyToClipboard(input.value, button);
+                    }
+                }
+            }
+        });
 
         // Handle form submission
         async function handleSubmit(e) {
@@ -314,7 +331,7 @@ function getJavaScriptCode() {
                                             url.shortUrl +
                                         '</a>' +
                                         '<button class="btn btn-sm btn-outline-primary ms-2 copy-btn" ' +
-                                                'onclick="copyToClipboard(\'' + url.shortUrl + '\', this)">' +
+                                                'data-url="' + url.shortUrl.replace(/"/g, '&quot;') + '">' +
                                             '<i class="fas fa-copy"></i>' +
                                         '</button>' +
                                     '</div>' +
