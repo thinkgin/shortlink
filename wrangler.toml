@@ -1,18 +1,12 @@
-name = "shortlink"
+name = "shortlink-v2"
 main = "src/worker.js"
-compatibility_date = "2023-10-01"
+compatibility_date = "2024-01-01"
 
 [vars]
-BASE_URL = "https://shortlink.cwwx1818.workers.dev"
+BASE_URL = "https://shortlink-v2.YOUR_SUBDOMAIN.workers.dev"
 
 # KV namespace for storing URL mappings
 [[kv_namespaces]]
 binding = "URL_STORAGE"
-id = "94f74c3d355a4dc6a61e57878ccc989c"
-preview_id = "94f74c3d355a4dc6a61e57878ccc989c"
-
-# Optional: Custom domain
-# [env.production]
-# routes = [
-#       { pattern = "short.example.com/*", zone_name = "example.com" }
-# ]
+id = "cacb14ce3a64488caf4a9fbb498e7b4e"
+preview_id = "cacb14ce3a64488caf4a9fbb498e7b4e"
