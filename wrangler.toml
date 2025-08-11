@@ -3,7 +3,7 @@ main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
 [vars]
-BASE_URL = "https://shortlink-v2.YOUR_SUBDOMAIN.workers.dev"
+BASE_URL = "https://shortlink-v2.cwwx1818.workers.dev"
 
 # KV namespace for storing URL mappings
 [[kv_namespaces]]
